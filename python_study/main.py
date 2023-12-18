@@ -1,7 +1,10 @@
+from collections import deque
 import random
 import socket
 import struct
 import time
+
+from class_test import A, B, C, D, TestClass
 
 
 def get_ntp_time():
@@ -19,14 +22,14 @@ def get_ntp_time():
 
     try:
         # 发送时间请求数据
-        ntp_data = b'\x1b' + 47 * b'\0'
+        ntp_data = b"\x1b" + 47 * b"\0"
         client_socket.sendto(ntp_data, (ntp_server, 123))
 
         # 接收服务器返回的数据
         response, address = client_socket.recvfrom(1024)
 
         # 解析时间戳
-        ntp_timestamp = struct.unpack('!12I', response)[10]
+        ntp_timestamp = struct.unpack("!12I", response)[10]
 
         # 转换为普通时间
         ntp_time = ntp_timestamp - ntp_timestamp_offset
@@ -63,7 +66,7 @@ def generate_number():
         return random.randint(0, 7)
 
 
-def crc8(data):
+def crc8(data: list):
     crc8_polynomial = 0x07
     crc = 0
 
@@ -79,15 +82,77 @@ def crc8(data):
     return crc & 0xFF
 
 
-if __name__ == '__main__':
+def set_global_variable():
+    global global_variable
+    global_variable = 20
+
+
+def access_global_variable():
+    global global_variable
+    global_variable += 12
+    print("Global variable:", global_variable)
+
+
+def set_obj_b():
+    global obj_b
+    obj_b = B()
+
+
+def obj_b_method():
+    global obj_b
+
+    obj_b.method()
+
+if __name__ == "__main__":
     # 获取时间并打印
     # print(get_ntp_time())
 
     # find_max()
-
-    # 要计算CRC-8的数据
-    message = bytearray([0x02, 0x09, 0x03])
+    message = [0x02, 0x09, 0x03, 0x45, 0x23, 0xAE, 0xAA]
 
     result_crc = crc8(message)
     # print(result_crc)
     print(f"CRC-8: 0x{result_crc:02X}")
+
+    message_queue = deque(message)
+    print(type(message_queue))
+
+    message_queue.popleft()
+    print(message_queue)
+
+    message_queue.append(0x12)
+    print(message_queue)
+
+    message_queue.appendleft(0x0A)
+    print(message_queue)
+
+    message_queue.extend(deque([0x01, 0x88, 0x19]))
+    print(f"message_queue:      {message_queue}")
+
+    queue_test = TestClass(
+        message_queue,
+    )
+    test = queue_test.message
+    test.pop()
+    print(f"test:               {test}")
+    queue_test.message.pop()
+    print(f"queue_test.message: {queue_test.message}")
+
+    message_queue.extendleft([int(num) for num in range(3)])
+    print(message_queue)
+
+    obj_d = D()
+    obj_d.method()
+
+    # # 查看各个类的 MRO
+    # print("MRO for class A:", A.__mro__)
+    # print("MRO for class B:", B.__mro__)
+    # print("MRO for class C:", C.__mro__)
+    # print("MRO for class D:", D.__mro__)
+
+    set_global_variable()
+
+    access_global_variable()
+
+    set_obj_b()
+    obj_b_method()
