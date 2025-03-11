@@ -38,6 +38,41 @@ class Solution:
 
         return s[start : start + max_len]
 
+    def isLongPressedName(self, name, typed):
+        """
+        :type name: str
+        :type typed: str
+        :rtype: bool
+        """
+        name_len = len(name)
+        typed_len = len(typed)
+        name_index = 0
+        typed_index = 0
+
+        while name_index < name_len and typed_index < typed_len:
+            if name[name_index] == typed[typed_index]:
+                name_index += 1
+                typed_index += 1
+            else:
+                if typed_index == 0:
+                    return False
+                if typed[typed_index] == typed[typed_index - 1]:
+                    typed_index += 1
+                else:
+                    return False
+
+        if name_index < name_len:
+            return False
+
+        if typed_index < typed_len:
+            while typed_index < typed_len:
+                if typed[typed_index] != name[name_index - 1]:
+                    return False
+                typed_index += 1
+            return True
+        else:
+            return True
+
 
 if __name__ == "__main__":
     s = Solution()
