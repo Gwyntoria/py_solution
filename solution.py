@@ -3,6 +3,7 @@ class Solution:
     def __init__(self):
         pass
 
+    # 5. Longest Palindromic Substring
     def longestPalindrome(self, s):
         """
         :type s: str
@@ -38,6 +39,7 @@ class Solution:
 
         return s[start : start + max_len]
 
+    # 925. Long Pressed Name
     def isLongPressedName(self, name, typed):
         """
         :type name: str
@@ -72,6 +74,39 @@ class Solution:
             return True
         else:
             return True
+
+    # 1658. Minimum Operations to Reduce X to Zero
+    def minOperations(self, nums, x):
+        """
+        :type nums: List[int]
+        :type x: int
+        :rtype: int
+        """
+        total = sum(nums)
+        n = len(nums)
+        if total < x:
+            return -1
+        if total == x:
+            return n
+
+        target = total - x
+        current_sum = 0
+        max_len = -1
+        left = 0
+
+        for right in range(n):
+            current_sum += nums[right]
+
+            # If current_sum exceeds target, move left pointer to reduce the window size
+            while current_sum > target and left <= right:
+                current_sum -= nums[left]
+                left += 1
+
+            # Check if current window sum equals target and update max length
+            if current_sum == target:
+                max_len = max(max_len, right - left + 1)
+
+        return n - max_len if max_len != -1 else -1
 
 
 if __name__ == "__main__":
