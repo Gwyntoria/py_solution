@@ -108,6 +108,35 @@ class Solution:
 
         return n - max_len if max_len != -1 else -1
 
+    # 733. Flood Fill
+    def floodFill(self, image, sr, sc, color):
+        """
+        :type image: List[List[int]]
+        :type sr: int
+        :type sc: int
+        :type color: int
+        :rtype: List[List[int]]
+        """
+        pre_color = image[sr][sc]
+        if pre_color == color:
+            return image
+
+        def spread(r, c):
+            if image[r][c] == pre_color:
+                image[r][c] = color
+
+                if r > 0:
+                    spread(r - 1, c)
+                if c > 0:
+                    spread(r, c - 1)
+                if r + 1 < len(image):
+                    spread(r + 1, c)
+                if c + 1 < len(image[0]):
+                    spread(r, c + 1)
+
+        spread(sr, sc)
+        return image
+
 
 if __name__ == "__main__":
     s = Solution()
