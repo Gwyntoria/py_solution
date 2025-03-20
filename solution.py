@@ -137,6 +137,42 @@ class Solution:
         spread(sr, sc)
         return image
 
+    # 3191. Minimum Operations to Make Binary Array Elements Equal to One I
+    def minOperations(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        array_len = len(nums)
+        ones = sum(nums)
+
+        if ones == 0:
+            if array_len % 3 == 0:
+                return array_len / 3
+            else:
+                return -1
+        elif ones == array_len:
+            return 0
+
+        op = 0
+
+        for i in range(array_len):
+            if nums[i] == 0:
+                if i + 2 < array_len:
+                    for j in range(i, i + 3):
+                        if nums[j] == 0:
+                            nums[j] = 1
+                        else:
+                            nums[j] = 0
+
+                    op += 1
+                else:
+                    for j in range(i, array_len):
+                        if nums[j] == 0:
+                            return -1
+
+        return op
+
 
 if __name__ == "__main__":
     s = Solution()
