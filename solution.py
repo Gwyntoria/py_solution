@@ -1,4 +1,34 @@
+from collections import defaultdict, deque
+
+
 class Solution:
+
+    class DSU:  # Disjoint Set Union
+        def __init__(self, n):
+            self.parent = [i for i in range(n)]
+            self.rank = [0] * n
+
+        def find(self, x: int) -> int:
+            if self.parent[x] != x:
+                self.parent[x] = self.find(self.parent[x])
+            return self.parent[x]
+
+        def union(self, x: int, y: int) -> bool:
+            root_x = self.find(x)
+            root_y = self.find(y)
+
+            if root_x == root_y:
+                return False
+
+            if self.rank[root_x] < self.rank[root_y]:
+                self.parent[root_x] = root_y
+            elif self.rank[root_x] > self.rank[root_y]:
+                self.parent[root_y] = root_x
+            else:
+                self.parent[root_x] = root_y
+                self.rank[root_y] += 1
+
+            return True
 
     def __init__(self):
         pass
@@ -172,6 +202,81 @@ class Solution:
                             return -1
 
         return op
+
+    # 2685. Count the Number of Complete Components
+    def countCompleteComponents(self, n: int, edges: list[list[int]]) -> int:
+        # Step 1: 构建邻接表
+        graph = defaultdict(set)
+        for a, b in edges:
+            graph[a].add(b)
+            graph[b].add(a)
+
+        visited = [False] * n  # 标记节点是否访问过
+        result = 0  # 记录完全连通分量的数量
+
+        # Step 2: 遍历所有节点，找到连通分量
+        def bfs(start):
+            queue = deque([start])
+            component = []  # 当前连通分量的节点集合
+            while queue:
+                node = queue.popleft()
+                if not visited[node]:
+                    visited[node] = True
+                    component.append(node)
+                    # 将未访问的邻居加入队列
+                    for neighbor in graph[node]:
+                        if not visited[neighbor]:
+                            queue.append(neighbor)
+            return component
+
+        for i in range(n):
+            if not visited[i]:  # 如果当前节点未访问过
+                component = bfs(i)  # 找到当前连通分量
+                k = len(component)  # 连通分量的节点数
+                # Step 3: 判断是否为完全图
+                edge_count = sum(len(graph[node]) for node in component) // 2
+                if edge_count == k * (k - 1) // 2:
+                    result += 1
+
+        return result
+
+    def countCompleteComponents_2(self, n: int, edges: list[list[int]]) -> int:
+        dsu = self.DSU(n)
+        for a, b in edges:
+            dsu.union(a, b)
+
+        adjacency_graphy = defaultdict(set)
+        for a, b in edges:
+            adjacency_graphy[a].add(b)
+            adjacency_graphy[b].add(a)
+
+        dsu_root_set = set()
+        for i in range(n):
+            root = dsu.find(i)
+
+            if root not in dsu_root_set:
+                dsu_root_set.add(root)
+
+        same_dsu_root_dict = defaultdict(set)
+
+        for root in dsu_root_set:
+            for i in range(n):
+                if dsu.find(i) == root:
+                    same_dsu_root_dict[root].add(i)
+
+        result = 0
+
+        for root in dsu_root_set:
+            edge_nums = 0
+            for a in same_dsu_root_dict[root]:
+                edge_nums += len(adjacency_graphy[a])
+
+            edge_nums //= 2
+            vertex_nums = len(same_dsu_root_dict[root])
+            if edge_nums == vertex_nums * (vertex_nums - 1) // 2:
+                result += 1
+
+        return result
 
 
 if __name__ == "__main__":
