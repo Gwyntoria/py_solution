@@ -315,6 +315,44 @@ class Solution:
 
         return result
 
+    # 3169. Count Days Without Meetings
+    def countDays(self, days: int, meetings: List[List[int]]) -> int:
+        """
+        :type days: int
+        :type meetings: List[List[int]]
+        :rtype: int
+        """
+
+        if not meetings:
+            return days
+
+        events = []
+        for start, end in meetings:
+            events.append((start, 1))  # Meeting starts
+            events.append((end + 1, -1))  # Meeting ends
+
+        events.sort()
+
+        available_days = 0
+        ongoing_meetings = 0
+        previous_day = 1
+
+        for day, event in events:
+            if day > days:
+                break
+
+            if ongoing_meetings == 0:
+                available_days += day - previous_day
+
+            ongoing_meetings += event
+
+            previous_day = day
+
+        if ongoing_meetings == 0 and previous_day <= days:
+            available_days += days - previous_day + 1
+
+        return available_days
+
 
 if __name__ == "__main__":
     s = Solution()
@@ -323,3 +361,7 @@ if __name__ == "__main__":
     print(s.longestPalindrome("cbbd"))
     print(s.longestPalindrome("a"))
     print(s.longestPalindrome("ac"))
+
+    days = 10
+    meetings = [[5,7],[1,3],[9,10]]
+    s.countDays(days, meetings)
