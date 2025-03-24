@@ -278,6 +278,42 @@ class Solution:
 
         return result
 
+    # 2115. Find All Possible Recipes from Given Supplies
+    def findAllRecipes(self, recipes, ingredients, supplies):
+        """
+        :type recipes: List[str]
+        :type ingredients: List[List[str]]
+        :type supplies: List[str]
+        :rtype: List[str]
+        """
+
+        recipes_ingredients_dict = {
+            recipe: ingredient for recipe, ingredient in zip(recipes, ingredients)
+        }  # Create a dictionary of recipes and their ingredients
+        available_set = set(supplies)  # Create a set of available ingredients
+        result = []
+        can_add = True
+
+        while can_add:
+            can_add = False  # Assume no more recipes can be added
+            for recipe in recipes:
+                if recipe in result:
+                    continue
+
+                can_cook = True
+                # Check if all ingredients are available
+                for ingredient in recipes_ingredients_dict[recipe]:
+                    if ingredient not in available_set:
+                        can_cook = False
+                        break
+
+                if can_cook:
+                    result.append(recipe)
+                    available_set.add(recipe)
+                    can_add = True  # Continue to check if more recipes can be added
+
+        return result
+
 
 if __name__ == "__main__":
     s = Solution()
