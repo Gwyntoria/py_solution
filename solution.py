@@ -1,4 +1,5 @@
 from collections import defaultdict, deque
+from typing import List
 
 
 class Solution:
@@ -204,7 +205,7 @@ class Solution:
         return op
 
     # 2685. Count the Number of Complete Components
-    def countCompleteComponents(self, n: int, edges: list[list[int]]) -> int:
+    def countCompleteComponents(self, n: int, edges: List[List[int]]) -> int:
         # Step 1: 构建邻接表
         graph = defaultdict(set)
         for a, b in edges:
@@ -240,7 +241,7 @@ class Solution:
 
         return result
 
-    def countCompleteComponents_2(self, n: int, edges: list[list[int]]) -> int:
+    def countCompleteComponents_2(self, n: int, edges: List[List[int]]) -> int:
         dsu = self.DSU(n)
         for a, b in edges:
             dsu.union(a, b)
