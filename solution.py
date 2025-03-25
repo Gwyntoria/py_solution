@@ -353,15 +353,67 @@ class Solution:
 
         return available_days
 
+    # 3394. Check if Grid can be Cut into Sections
+    def checkValidCuts(self, n, rectangles):
+        """
+        :type n: int
+        :type rectangles: List[List[int]]
+        :rtype: bool
+        """
+
+        events = []
+        shared_edges = 0
+        ongoing_rectangles = 0
+
+        for start_x, _, end_x, _ in rectangles:
+            events.append((start_x, 1))
+            events.append((end_x, -1))
+
+        events.sort()
+
+        for x, event in events:
+            ongoing_rectangles += event
+
+            if ongoing_rectangles == 0:
+                shared_edges += 1
+
+            if shared_edges >= 2 and ongoing_rectangles > 0:
+                return True
+
+        events = []
+        shared_edges = 0
+        ongoing_rectangles = 0
+
+        for _, start_y, _, end_y in rectangles:
+            events.append((start_y, 1))
+            events.append((end_y, -1))
+
+        events.sort()
+
+        for y, event in events:
+            ongoing_rectangles += event
+
+            if ongoing_rectangles == 0:
+                shared_edges += 1
+
+            if shared_edges >= 2 and ongoing_rectangles > 0:
+                return True
+
+        return False
+
 
 if __name__ == "__main__":
     s = Solution()
 
-    print(s.longestPalindrome("babad"))
-    print(s.longestPalindrome("cbbd"))
-    print(s.longestPalindrome("a"))
-    print(s.longestPalindrome("ac"))
+    s.longestPalindrome("babad")
+    s.longestPalindrome("cbbd")
+    s.longestPalindrome("a")
+    s.longestPalindrome("ac")
 
     days = 10
-    meetings = [[5,7],[1,3],[9,10]]
+    meetings = [[5, 7], [1, 3], [9, 10]]
     s.countDays(days, meetings)
+
+    n = 5
+    rectangles = [[1, 0, 5, 2], [0, 2, 2, 4], [3, 2, 5, 3], [0, 4, 4, 5]]
+    s.checkValidCuts(n, rectangles)
