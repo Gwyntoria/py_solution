@@ -1,4 +1,5 @@
 from collections import defaultdict, deque
+from statistics import median
 from typing import List
 
 
@@ -107,7 +108,7 @@ class Solution:
             return True
 
     # 1658. Minimum Operations to Reduce X to Zero
-    def minOperations(self, nums, x):
+    def minOperations1658(self, nums, x):
         """
         :type nums: List[int]
         :type x: int
@@ -169,7 +170,7 @@ class Solution:
         return image
 
     # 3191. Minimum Operations to Make Binary Array Elements Equal to One I
-    def minOperations(self, nums):
+    def minOperations3191(self, nums):
         """
         :type nums: List[int]
         :rtype: int
@@ -400,6 +401,33 @@ class Solution:
                 return True
 
         return False
+
+    # 2033. Minimum Operations to Make a Uni-Value Grid
+    def minOperations2033(self, grid: List[List[int]], x: int) -> int:
+        """
+        :type grid: List[List[int]]
+        :type x: int
+        :rtype: int
+        """
+
+        elements = []
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                elements.append(grid[i][j])
+
+        elements.sort()
+
+        elements_length = len(elements)
+        median_element = elements[elements_length // 2]
+        operations = 0
+
+        for i in range(elements_length):
+            if (elements[i] - median_element) % x != 0:
+                return -1
+
+            operations += abs(elements[i] - median_element) // x
+
+        return operations
 
 
 if __name__ == "__main__":
